@@ -1,7 +1,7 @@
 import axios from "axios";
 //import 'dotenv/config'
 
-const apiKey = 'YOUR API KEY HERE'
+const apiKey = ''
 //process.env.apiKey;
 
 export const getNewQuote = async () => {
