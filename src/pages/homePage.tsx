@@ -1,37 +1,42 @@
+import { Link } from 'react-router-dom';
+import { TailSpin } from 'react-loader-spinner';
 import '../App.css'
 import { getNewQuote } from '../api/quotesApi'
 import { useEffect, useState } from 'react'
 
-import { FaBookmark } from 'react-icons/fa';
+import { FaBookmark, FaCheck, FaArrowRight } from 'react-icons/fa';
 
 const HomePage = ()  => {
 
-    const [currentQuote, setNewQuote] = useState(
-        [
-            {
-                "quote": "",
-                "author": "",
-                "category": ""
-            }
-        ]
-    );
+    type quote = {
+        "quote": "",
+        "author": "",
+        "category": ""
+    }
 
-    const [hasQuote, setHasQuoteState] = useState(false);
+    const [currentQuote, setNewQuote] = useState<quote[]>([]);
+
+    const [hasError, setHasError] = useState(false);
     const [canSave, setCanSave] = useState(true);
+    const [loading, setLoadingState] = useState(true);
 
     const getNextQuote = async () => {
+        setLoadingState(true);
+        
         const newQuote = await getNewQuote();
         if (!newQuote) {
-            setHasQuoteState(false);
+            setHasError(true);
+            setLoadingState(false);
             return
         }
         setNewQuote(newQuote);
-        setHasQuoteState(true);
+        setLoadingState(false);
+        setHasError(false);
         setCanSave(true);
+    
     }
 
     const saveQuote = (quote: string, author: string) => {
-        console.log('saved');
         const savedQuotes = localStorage.getItem('savedQuotes');
         const quoteEntry = {
             "quote": quote,
@@ -42,7 +47,7 @@ const HomePage = ()  => {
             localStorage.setItem('savedQuotes', JSON.stringify([quoteEntry]));
         } else {
             const currentSaved = JSON.parse(savedQuotes);
-            console.log('2', currentSaved)
+            
             currentSaved.push(quoteEntry);
             localStorage.setItem('savedQuotes', JSON.stringify(currentSaved));
         }
@@ -56,26 +61,46 @@ const HomePage = ()  => {
     return (
         <div className="container">
             <div className="title-container">
-                <h1>Quotes <span>TSX</span></h1>
+                <h1>Quotes<span>TSX</span></h1>
                 
             </div>
 
             <div className="quotes-container">
-                <div className={`${hasQuote ? '' : 'dont-show'}`}>
-                <h3>{currentQuote[0].quote}</h3>
-                <h4>{currentQuote[0].author}</h4>
-                </div>
-                
-                <div className={`${hasQuote ? 'dont-show' : 'warning'}`}>
+                {!hasError && !loading && (
+                    <div>
+                        <h3>{currentQuote[0].quote}</h3>
+                        <h4>{currentQuote[0].author}</h4>
+                    </div>
+                )}
+                { hasError && (
+                <div className={'warning'}>
                     <h1>Error Getting New Quote</h1>
                     <h2>Please try again later!</h2>
                 </div>
+                )}
+
+                { loading && (
+                    <div className="loading">
+                        <TailSpin
+                            height="120"
+                            width="120"
+                            color="#00ADB5"
+                            ariaLabel="tail-spin-loading"
+                            radius="1"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                            visible={true}
+                        />
+                    </div>
+                )
+                }
+                
             </div>
 
             <div className="btns-container">
-                <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>{canSave ? 'Save' : 'Already Saved'}</button>
-                <button onClick={getNextQuote}>Next</button>
-                <button>Saved<FaBookmark className='saved' /></button>
+                <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave && <FaCheck className='saved'/>}</button>
+                <button onClick={getNextQuote}>Next <FaArrowRight className='saved' /></button>
+                <Link to={'/saved'} className='link-styles'><button>Saved<FaBookmark className='saved' /></button></Link>
             </div>
         </div>
     )
