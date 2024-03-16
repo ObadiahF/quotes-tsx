@@ -9,8 +9,7 @@
   background-color: #393E46;
   margin: 0 auto;
   display: flex;
-  min-width: 80%;
-  max-width: 90%;
+  width: 90%;
   align-items: center;
   flex-direction: column;
   gap: 3rem;
@@ -87,7 +86,6 @@
   color: white;
   display: flex;
   align-items: center;
-  width: fit-content;
 }
 
 .saved {
@@ -104,7 +102,8 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color: red;
+  color: rgb(176, 57, 57);
+  text-align: center;
 }
 
 .loading {
@@ -155,3 +154,19 @@
     font-size: 2.3rem;
   }
 }
+
+@media screen and (max-width: 474px) {
+  .btns-container button {
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .title-container h1 {
+    font-size: 52px;
+  }
+}
+
+
