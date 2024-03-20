@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
-import '../App.css'
+import './styles/index.css'
 import { getNewQuote } from '../api/quotesApi'
 import { useEffect, useState } from 'react'
+import axios from "axios";
+
 
 import { FaBookmark, FaCheck, FaArrowRight } from 'react-icons/fa';
 
@@ -35,6 +37,12 @@ const HomePage = ()  => {
         setCanSave(true);
     
     }
+    
+    const getSavedQuotes = async () => {
+        const response = await axios.get('http://localhost:3000/savequote');
+        console.log(response);
+    }
+    
 
     const saveQuote = (quote: string, author: string) => {
         const savedQuotes = localStorage.getItem('savedQuotes');
@@ -69,7 +77,7 @@ const HomePage = ()  => {
                 {!hasError && !loading && (
                     <div>
                         <h3>{currentQuote[0].quote}</h3>
-                        <h4>{currentQuote[0].author}</h4>
+                        <h4><span>-</span> {currentQuote[0].author}</h4>
                     </div>
                 )}
                 { hasError && (
@@ -101,6 +109,7 @@ const HomePage = ()  => {
                 <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave && <FaCheck className='saved'/>}</button>
                 <button onClick={getNextQuote}>Next <FaArrowRight className='saved' /></button>
                 <Link to={'/saved'} className='link-styles'><button>Saved<FaBookmark className='saved' /></button></Link>
+                <button>Log Out</button>
             </div>
         </div>
     )

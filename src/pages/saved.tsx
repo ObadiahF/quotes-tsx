@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import '../App.css';
+import './styles/index.css'
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaArrowLeft, FaWarehouse } from 'react-icons/fa';
 

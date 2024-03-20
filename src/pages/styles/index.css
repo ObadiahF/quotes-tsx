@@ -1,0 +1,174 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .container {
+    background-color: #393E46;
+    margin: 0 auto;
+    display: flex;
+    width: 90%;
+    align-items: center;
+    flex-direction: column;
+    gap: 3rem;
+    margin-top: 3rem;
+    border-radius: 32px;
+    min-height: 80vh;
+    height: auto;
+    padding: 2rem;
+  }
+  
+  .title-container {
+    font-size: 2rem;
+    text-align: center;
+  }
+  
+  .title-container h1 span {
+    color: #00ADB5;
+  }
+
+  .quotes-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .quotes-container h3 {
+    position: relative;
+    font-size: 1.5rem;
+  }
+  
+  .quotes-container h3::before {
+    content: '“';
+    position: absolute;
+    font-size: 3rem;
+    top: -30px;
+    left: -20px;
+    color:#00ADB5;
+  }
+  
+  .quotes-container h3::after {
+    content: '”';
+    position: absolute;
+    font-size: 3rem;
+    bottom: -50px;
+    color: #00ADB5;
+  }
+  
+  
+  .quotes-container h4 {
+    margin-top: 2rem;
+    font-size: 1.2rem;
+    position: relative;
+    margin-left: 2rem;
+  }
+  
+  .quotes-container h4 span {
+    color:#00ADB5;
+  }
+  
+  .btns-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .btns-container button {
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.5rem 6rem;
+    border-radius: 24px;
+    background-color: #222831;
+    border: 2px solid hsl(183, 100%, 35%);
+    color: white;
+    display: flex;
+    align-items: center;
+  }
+  
+  .saved {
+    margin: 0 10px;
+  }
+  
+  .btns-container button:hover {
+    transition: 300ms ease;
+    opacity: 0.7;
+  }
+  
+  .warning {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: rgb(176, 57, 57);
+    text-align: center;
+  }
+  
+  .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+  }
+  
+  .link-styles {
+    text-decoration: none;
+  }
+  
+  #delete-btn {
+    position: absolute;
+    background-color: #222831;
+    right: 0;
+    top: -65px;
+    font-size: 42px;
+    padding: 0.5rem;
+    border: none;
+    border: 2px solid #00ADB5;
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+    color: white;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  
+  #delete-btn:hover {
+    transition: 300ms ease;
+    opacity: 0.7;
+  }
+  
+  .delete-btn-container {
+    position: relative;
+  }
+  
+  @media screen and (max-width: 1385px) {
+    .btns-container {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .btns-container button {
+      margin: 0 auto;
+      font-size: 2.3rem;
+    }
+  }
+  
+  @media screen and (max-width: 474px) {
+    .btns-container button {
+      width: 100%;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+    }
+  
+    .title-container h1 {
+      font-size: 52px;
+    }
+  }
+  
+  
+  
