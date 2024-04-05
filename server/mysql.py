@@ -48,11 +48,12 @@ def addUser(name, hashedPassword):
         cursor.execute(insert_query, values)
 
         connection.commit()
-        return False
+        sessionToken = redisServer.setSessionKey(name)
+        return [False, sessionToken]
     except Exception as e:
         # Handle exceptions here
         print("An error occurred:", e)
-        return True
+        return [True]
     finally:
         if 'connection' in locals():
             connection.close()

@@ -57,6 +57,7 @@ const Auth = ()  => {
             }).then((res) => {
                 const session = res.data.session;
                 localStorage.setItem("sessionId", session);
+                localStorage.setItem("name", name);
                 window.location.href = '/';
             }).catch((error) => {
                 console.log(error);
@@ -71,7 +72,10 @@ const Auth = ()  => {
             axios.post('http://127.0.0.1:3000/signup', {
                name,
                password 
-            }).then(() => {
+            }).then((res) => {
+                const session = res.data.session;
+                localStorage.setItem("sessionId", session);
+                localStorage.setItem("name", name);
                 window.location.href = '/';
             }).catch((error) => {
                 console.log(error);

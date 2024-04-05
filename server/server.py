@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import mysql
 import bcrypt
+import redisServer
 
 
 load_dotenv()
@@ -18,6 +19,17 @@ domain = os.getenv("domain")
 
 @app.route('/quotes', methods=['GET'])
 def get_quotes():
+    sessionToken = request.args.get('sessionToken')
+    name = request.args.get('name')
+
+    if sessionToken == None | name == None:
+        return jsonify({'error': "Must be logged in"}), 403
+    
+    checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
+
+    if checkIfSessionExists == False:
+        return jsonify({'error': "Must be logged in"}), 403
+
     try:
         response = requests.get('https://api.api-ninjas.com/v1/quotes?category=', headers={'X-Api-Key': api_key})
         response.raise_for_status()
@@ -29,6 +41,17 @@ def get_quotes():
 
 @app.route('/savequote', methods=['GET'])
 def save_quotes():
+    sessionToken = request.args.get('sessionToken')
+    name = request.args.get('name')
+
+    if sessionToken == None | name == None:
+        return jsonify({'error': "Must be logged in"}), 403
+    
+    checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
+    
+    if checkIfSessionExists == False:
+        return jsonify({'error': "Must be logged in"}), 403
+    
     try:
         mysql.test()
         return jsonify({'success': 'true'}), 200
@@ -49,11 +72,11 @@ def signup():
         passwordHash = hashPassword(password)
         sql_res_error = mysql.addUser(name, passwordHash)
         
-        if sql_res_error != False:
+        if sql_res_error[0] != False:
             return jsonify({"error": "Username already taken"}), 400
         
         # Return a response
-        return jsonify({"message": "JSON received"}), 200
+        return jsonify({"message": "JSON received", "session": sql_res_error[1]}), 200
     else:
         return jsonify({"error": "Request must contain JSON data"}), 400
 

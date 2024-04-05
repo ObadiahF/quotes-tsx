@@ -74,7 +74,16 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 1rem;
+  }
+
+  .account-btns {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-direction: column;
   }
   
   .btns-container button {

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import axios from "axios";
 
 
-import { FaBookmark, FaCheck, FaArrowRight } from 'react-icons/fa';
+import { FaBookmark, FaCheck, FaArrowRight, FaUser } from 'react-icons/fa';
 
 const HomePage = ()  => {
 
@@ -106,10 +106,9 @@ const HomePage = ()  => {
             </div>
 
             <div className="btns-container">
-                <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave && <FaCheck className='saved'/>}</button>
+                <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave ? <FaCheck className='saved'/> : <FaBookmark className='saved'/>}</button>
                 <button onClick={getNextQuote}>Next <FaArrowRight className='saved' /></button>
-                <Link to={'/saved'} className='link-styles'><button>Saved<FaBookmark className='saved' /></button></Link>
-                <button>Log Out</button>
+                <Link to={'/account'}><button>Account <FaUser className='saved'/></button></Link>
             </div>
         </div>
     )
