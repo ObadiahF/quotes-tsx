@@ -54,7 +54,9 @@ const Auth = ()  => {
             axios.post('http://127.0.0.1:3000/login', {
                name,
                password 
-            }).then(() => {
+            }).then((res) => {
+                const session = res.data.session;
+                localStorage.setItem("sessionId", session);
                 window.location.href = '/';
             }).catch((error) => {
                 console.log(error);

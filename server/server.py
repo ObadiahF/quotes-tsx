@@ -71,7 +71,7 @@ def login():
         wasSuccessful = mysql.login(name, password)
 
         if wasSuccessful[0] == True:
-            return jsonify({"message": "Success!"}), 200
+            return jsonify({"message": "Success!", "session": wasSuccessful[1]}), 200
         else:
             return jsonify({"error": wasSuccessful[1]}), 400
     else:

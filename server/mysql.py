@@ -3,6 +3,7 @@ from datetime import date
 from dotenv import load_dotenv
 import os
 import bcrypt
+import redisServer
 
 load_dotenv()
 timeout = 10
@@ -73,7 +74,8 @@ def login(name, password):
 
             iscorrectPassword = bcrypt.checkpw(password_bytes, passwordFromDatabase)
             if iscorrectPassword:
-                return [True]
+                sessionToken = redisServer.setSessionKey(name)
+                return [True, sessionToken]
         else:
             return [False, "Incorrect Login Details"]
 

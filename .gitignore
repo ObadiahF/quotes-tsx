@@ -26,3 +26,5 @@ dist-ssr
 #other stuff
 .env
 !.env.example
+server/__pycache__/mysql.cpython-310.pyc
+server/__pycache__/redisServer.cpython-310.pyc
