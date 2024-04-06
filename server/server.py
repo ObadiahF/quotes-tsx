@@ -51,8 +51,11 @@ def save_quotes():
         return jsonify({'error': "Must be logged in"}), 403
     
     try:
-        mysql.test()
-        return jsonify({'success': 'true'}), 200
+        response = mysql.getSavedQuotes(name)
+        if response[0] == False:
+            return jsonify({"error": response[1]}), 404
+        
+        return jsonify({'success': 'true', "quotes": response[1]}), 200
     except Exception as e:
         print(e)
         return jsonify({'error': 'Internal server error'}), 500
@@ -157,6 +160,28 @@ def login():
     else:
         return jsonify({"error": "Request must contain JSON data"}), 400
 
+@app.route('/numOfQuotesSaved', methods=['GET'])
+def num():
+    sessionToken = request.args.get('sessionToken')
+    name = request.args.get('name')
+
+    if not sessionToken or not name:
+        return jsonify({'error': "Must be logged in"}), 403
+    
+    checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
+    
+    if checkIfSessionExists == False:
+        return jsonify({'error': "Must be logged in"}), 403
+    
+    try:
+        response = mysql.numOfSavedQuotes(name)
+        if response[0] == False:
+            return jsonify({"error": response[1]}), 404
+        
+        return jsonify({'success': 'true', "num": response[1]}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'Internal server error'}), 500
 
 
 def hashPassword(password):

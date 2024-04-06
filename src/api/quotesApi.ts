@@ -31,7 +31,27 @@ export const deleteSavedQuote = async (quote: string, author: string) => {
             "quote": quote,
             "author": author
         });
-        return response.status;
+        return await response.status;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export const getSavedQuotes = async () => {
+    const data = await getData();
+    try {
+        const response = await axios.get(`http://localhost:3000/savedquotes?sessionToken=${data?.session}&name=${data?.name}`);
+        return response.data;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export const getNumOfQuotes = async () => {
+    const data = await getData();
+    try {
+        const response = await axios.get(`http://localhost:3000/numOfQuotesSaved?sessionToken=${data?.session}&name=${data?.name}`);
+        return response.data;
     } catch (err) {
         console.error(err);
     }

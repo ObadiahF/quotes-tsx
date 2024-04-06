@@ -175,3 +175,55 @@ def deleteSavedQuote (name, quote, author):
     finally:
         if 'connection' in locals():
             connection.close()
+
+def getSavedQuotes(name):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        userId = getUserId(name)
+
+        if userId[0] == False:
+            return userId[1]
+        
+        query = "SELECT * FROM user_data WHERE user_id = %s"
+        value = (userId[1])
+        cursor.execute(query, value)
+
+        results = cursor.fetchall()
+        if len(results) > 0:
+           return [True, results]
+        else:
+            return [False, "Nothing Found!"]
+
+    except Exception as e:
+        # Handle exceptions here
+        print("An error occurred in login:", e)
+        return [False, "Server Error"]
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
+def numOfSavedQuotes(name):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        userId = getUserId(name)
+
+        if userId[0] == False:
+            return userId[1]
+        
+        query = "SELECT COUNT(*) FROM user_data WHERE user_id = %s"
+        value = (userId[1])
+        cursor.execute(query, value)
+
+        results = cursor.fetchone()
+        return [True, results['COUNT(*)']]
+        
+
+    except Exception as e:
+        # Handle exceptions here
+        print("An error occurred in login:", e)
+        return [False, "Server Error"]
+    finally:
+        if 'connection' in locals():
+            connection.close()

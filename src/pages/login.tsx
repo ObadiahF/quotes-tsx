@@ -91,7 +91,7 @@ const Auth = ()  => {
     }
 
     return (
-        <div className={style.container}>
+        <div className={`${style.container} text-white` }>
             <h1>{mode === "login" ? "Login" : "Sign Up"}</h1>
             {error && (
                 <p>{error}</p>

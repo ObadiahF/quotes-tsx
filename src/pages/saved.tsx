@@ -1,33 +1,30 @@
 import { useState, useEffect } from "react";
 import './styles/index.css'
 import { Link } from "react-router-dom";
-import { FaArrowRight, FaArrowLeft, FaWarehouse } from 'react-icons/fa';
+import { FaArrowRight, FaArrowLeft, FaWarehouse, FaTrash } from 'react-icons/fa';
+import { getSavedQuotes, deleteSavedQuote } from '../api/quotesApi'
+import { useToast } from "@/components/ui/use-toast"
 
 
 const Saved = () => {
+    const { toast } = useToast()
 
     type quote = {
         "quote": "",
-        "author": "",
-        "category": ""
+        "quoteAuthor": "",
     }
 
     const [savedQuotes, setSavedQuotes] = useState<quote[]>([]);
-    
-    const [hasQuote, setHasQuoteState] = useState(false);
     const [quoteIndex, setQuoteIndex] = useState(0);
 
     useEffect(() => {
-        const quotes: string | null = getSavedQuotes();
-        if (quotes) {
-            if (JSON.parse(quotes).length === 0) {
-                setHasQuoteState(false);
-                return
-            }
-            setHasQuoteState(true);
-            setSavedQuotes(JSON.parse(quotes));
-            setQuoteIndex(0);
+        const fetchData = async () => {
+            const res = await getSavedQuotes();
+            console.log(res.quotes);
+            setSavedQuotes(res.quotes);
         }
+
+        fetchData()
     }, []);
 
     const cycle = (num: number) => {
@@ -42,46 +39,41 @@ const Saved = () => {
         }
     }
 
-    const deleteSavedQuote = () => {
-        const quotes: string | null = getSavedQuotes();
+    const deleteQuote = async () => {
+        const { quote, quoteAuthor } = savedQuotes[quoteIndex];
 
-        if (quotes) {
-            
-            const quotesArr: quote[] = JSON.parse(quotes);
-            quotesArr.splice(quoteIndex, 1)
-            localStorage.setItem('savedQuotes', JSON.stringify(quotesArr));
-            setSavedQuotes(quotesArr);
-
-            cycle(1);
-            
-            if (quotesArr.length === 0) {
-                setHasQuoteState(false);
-            }
+        setSavedQuotes((prev) => prev.filter((_, index) => index !== quoteIndex));
+        const status = await deleteSavedQuote(quote, quoteAuthor);
+        if (status === 200) {
+            toast({
+                title: "Success!",
+                description: "Quote successfully removed from saved!"
+            })
+        } else {
+            toast({
+                title: "Error!",
+                description: "Unable to remove quote, please try again later.",
+                variant: "destructive"
+            })
         }
     }
 
-    const getSavedQuotes = () => {
-        const quotes: string | null = localStorage.getItem('savedQuotes');
-        return quotes;
-    }
-
     return (
-        <div className="container">
-            <div className="title-container">
+        <div className="container text-white">
+            <div className="title-container text-8xl">
                 <h1>Saved<span>Quotes</span></h1>
             </div>
 
             <div className="quotes-container">
-                {hasQuote ? (
+                {savedQuotes.length > 0 ? (
                 <div className={'delete-btn-container'}>
-                    <button id='delete-btn' onClick={deleteSavedQuote}>X</button>
                     <h3>{savedQuotes[quoteIndex].quote}</h3>
-                    <h4>{savedQuotes[quoteIndex].author}</h4>
+                    <h4>{savedQuotes[quoteIndex].quoteAuthor}</h4>
                 </div>
                 ):
                 <div className={'warning'}>
-                        <h1>No Saved Quotes</h1>
-                    <h2>Try Saving Some!</h2>
+                        <h1 className="text-4xl">No Saved Quotes</h1>
+                    <h2 className="text-2xl">Try Saving Some!</h2>
                 </div>
                 }
 
@@ -90,6 +82,7 @@ const Saved = () => {
             <div className="btns-container">
                 <button onClick={() => cycle(-1)}> <FaArrowLeft className='saved' />Back</button>
                 <Link to={'/'} className="link-styles"><button>Home <FaWarehouse className='saved' /></button></Link>
+                <button onClick={deleteQuote}>Delete <FaTrash className="saved"/></button>
                 <button onClick={() => cycle(1)}>Next <FaArrowRight className='saved' /></button>
             </div>
         </div>
