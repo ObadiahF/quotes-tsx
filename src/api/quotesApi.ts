@@ -1,10 +1,10 @@
 import axios from "axios";
-const domain = "https://quotes-tsx.onrender.com"
+const domain = "http://127.0.0.1:3000"
 
 export const getNewQuote = async () => {
     const data = await getData();
     try {
-        const response = await axios.get(`http://${domain}/quotes?sessionToken=${data?.session}&name=${data?.name}`);
+        const response = await axios.get(`${domain}/quotes?sessionToken=${data?.session}&name=${data?.name}`);
         return response.data;
     } catch (err) {
         console.error(err);
@@ -14,7 +14,7 @@ export const getNewQuote = async () => {
 export const saveQuote = async (quote: string, author: string) => {
     const data = await getData();
     try {
-        const response = await axios.post(`http://${domain}/savequote?sessionToken=${data?.session}&name=${data?.name}`, {
+        const response = await axios.post(`${domain}/savequote?sessionToken=${data?.session}&name=${data?.name}`, {
             "quote": quote,
             "author": author
         });
@@ -27,7 +27,7 @@ export const saveQuote = async (quote: string, author: string) => {
 export const deleteSavedQuote = async (quote: string, author: string) => {
     const data = await getData();
     try {
-        const response = await axios.post(`http://${domain}/deleteSavedQuote?sessionToken=${data?.session}&name=${data?.name}`, {
+        const response = await axios.post(`${domain}/deleteSavedQuote?sessionToken=${data?.session}&name=${data?.name}`, {
             "quote": quote,
             "author": author
         });
@@ -40,7 +40,7 @@ export const deleteSavedQuote = async (quote: string, author: string) => {
 export const getSavedQuotes = async () => {
     const data = await getData();
     try {
-        const response = await axios.get(`http://${domain}/savedquotes?sessionToken=${data?.session}&name=${data?.name}`);
+        const response = await axios.get(`${domain}/savedquotes?sessionToken=${data?.session}&name=${data?.name}`);
         return response.data;
     } catch (err) {
         console.error(err);
@@ -50,7 +50,7 @@ export const getSavedQuotes = async () => {
 export const getNumOfQuotes = async () => {
     const data = await getData();
     try {
-        const response = await axios.get(`http://${domain}/numOfQuotesSaved?sessionToken=${data?.session}&name=${data?.name}`);
+        const response = await axios.get(`${domain}/numOfQuotesSaved?sessionToken=${data?.session}&name=${data?.name}`);
         return response.data;
     } catch (err) {
         console.error(err);

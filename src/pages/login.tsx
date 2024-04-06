@@ -11,7 +11,8 @@ const Auth = ()  => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [progress, setProgress] = useState(0)
-
+    
+    const domain = "https://quotes-tsx.onrender.com"
 
     useEffect(() => {
         const name = localStorage.getItem("name")
@@ -63,7 +64,7 @@ const Auth = ()  => {
         setError("");
         setProgress(50);
         if (mode === "login") {
-            axios.post('http://127.0.0.1:3000/login', {
+            axios.post(`${domain}/login`, {
                name,
                password 
             }).then((res) => {
@@ -83,7 +84,7 @@ const Auth = ()  => {
                 setError(errorMessage);
             })
         } else {
-            axios.post('http://127.0.0.1:3000/signup', {
+            axios.post(`${domain}/signup`, {
                name,
                password 
             }).then((res) => {
