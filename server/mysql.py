@@ -143,3 +143,35 @@ def saveQuote (name, quote, author):
     finally:
         if 'connection' in locals():
             connection.close()
+
+def deleteSavedQuote (name, quote, author):
+    try:
+        userIdResponse = getUserId(name)
+        userId = userIdResponse[1]
+
+        if userIdResponse[0] == False:
+            return userIdResponse
+        
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        delete_query = (
+            """
+            DELETE FROM user_data
+            WHERE user_id = %s AND quoteAuthor = %s AND quote = %s
+            """
+        )
+        values = (userId, author, quote)
+
+
+        cursor.execute(delete_query, values)
+        connection.commit()
+        return [True]
+
+    except Exception as e:
+        # Handle exceptions here
+        print("An error occurred in login:", e)
+        return [False, "Server Error"]
+    finally:
+        if 'connection' in locals():
+            connection.close()

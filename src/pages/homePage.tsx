@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 import './styles/index.css'
-import { getNewQuote, saveQuote } from '../api/quotesApi'
+import { getNewQuote, saveQuote, deleteSavedQuote } from '../api/quotesApi'
 import { useEffect, useState } from 'react'
-import axios from "axios";
 import { useToast } from "@/components/ui/use-toast"
 
 
@@ -22,7 +21,7 @@ const HomePage = ()  => {
     const [currentQuote, setNewQuote] = useState<quote[]>([]);
 
     const [hasError, setHasError] = useState(false);
-    const [canSave, setCanSave] = useState(true);
+    const [IsSaved, setIsSaved] = useState(true);
     const [loading, setLoadingState] = useState(true);
 
     const getNextQuote = async () => {
@@ -37,25 +36,30 @@ const HomePage = ()  => {
         setNewQuote(newQuote);
         setLoadingState(false);
         setHasError(false);
-        setCanSave(true);
-    
-    }
-    
-    const getSavedQuotes = async () => {
-        const response = await axios.get('http://localhost:3000/savequote');
-        console.log(response);
+        setIsSaved(true);
     }
     
 
     const saveCurrentQuote = async (quote: string, author: string) => {
+       if (!IsSaved) {
+        const status = await deleteSavedQuote(quote, author);
+        if (status === 200) {
+            toast({
+                title: "Success!",
+                description: "Quote successfully removed from saved!"
+            })
+        }
+       } else {
         const status = await saveQuote(quote, author);
         if (status === 200) {
             toast({
                 title: "Success!",
                 description: "Quote successfully saved!"
             })
-            setCanSave(false);
         }
+       }
+       setIsSaved((prev) =>  !prev);
+
     }
 
     useEffect(() => {
@@ -101,7 +105,12 @@ const HomePage = ()  => {
             </div>
 
             <div className="btns-container">
-                <button onClick={() => saveCurrentQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave ? <FaCheck className='saved'/> : <FaBookmark className='saved'/>}</button>
+                {IsSaved ?
+                 <button onClick={() => saveCurrentQuote(currentQuote[0].quote, currentQuote[0].author)}>Save <FaCheck className='saved'/></button>
+                 :
+                 <button onClick={() => saveCurrentQuote(currentQuote[0].quote, currentQuote[0].author)}>Saved <FaBookmark className='saved'/></button>
+                }
+               
                 <button onClick={getNextQuote}>Next <FaArrowRight className='saved' /></button>
                 <Link to={'/account'}><button>Account <FaUser className='saved'/></button></Link>
             </div>

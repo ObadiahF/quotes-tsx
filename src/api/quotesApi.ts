@@ -24,6 +24,19 @@ export const saveQuote = async (quote: string, author: string) => {
     }
 }
 
+export const deleteSavedQuote = async (quote: string, author: string) => {
+    const data = await getData();
+    try {
+        const response = await axios.post(`http://localhost:3000/deleteSavedQuote?sessionToken=${data?.session}&name=${data?.name}`, {
+            "quote": quote,
+            "author": author
+        });
+        return response.status;
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 const getData = async () => {
     const session = localStorage.getItem("sessionId");
     const name = localStorage.getItem("name");

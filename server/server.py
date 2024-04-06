@@ -85,6 +85,36 @@ def save_quote():
             return jsonify({"success": True}), 200
     else:
         return jsonify({"error": "Request must contain JSON data"}), 400
+    
+
+@app.route('/deleteSavedQuote', methods=['POST'])
+def delete_Saved_Quote():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # Get the JSON data from the request
+        data = request.json
+
+        quote = data["quote"]
+        author = data["author"]
+        sessionToken = request.args.get('sessionToken')
+        name = request.args.get('name')
+
+        if not sessionToken or not name:
+            return jsonify({'error': "Must be logged in"}), 403
+        
+        checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
+
+        if checkIfSessionExists == False:
+            return jsonify({'error': "Must be logged in"}), 403
+        
+        sqlResponse = mysql.deleteSavedQuote(name, quote, author)
+
+        if sqlResponse[0] == False:
+            return jsonify({'error': sqlResponse[1]}), 400
+        else:
+            return jsonify({"success": True}), 200
+    else:
+        return jsonify({"error": "Request must contain JSON data"}), 400
 
 @app.route('/signup', methods=['POST'])
 def signup():
