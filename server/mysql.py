@@ -87,3 +87,59 @@ def login(name, password):
     finally:
         if 'connection' in locals():
             connection.close()
+
+def getUserId(name):
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        query = "SELECT * FROM users WHERE name = %s"
+        value = (name)
+        cursor.execute(query, value)
+
+        results = cursor.fetchall()
+        if len(results) > 0:
+            user = results[0]
+            getUserId = user['id']
+            return [True, getUserId]
+        else:
+            return [False, "Nothing Found"]
+
+    except Exception as e:
+        # Handle exceptions here
+        print("An error occurred in login:", e)
+        return [False, "Server Error"]
+    finally:
+        if 'connection' in locals():
+            connection.close()
+
+
+def saveQuote (name, quote, author):
+    try:
+        userIdResponse = getUserId(name)
+        userId = userIdResponse[1]
+
+        if userIdResponse[0] == False:
+            return userIdResponse
+        
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        insert_query = (
+            """
+            INSERT INTO user_data (user_id, quoteAuthor, quote)
+            VALUES (%s, %s, %s)
+            """
+        )
+        values = (userId, author, quote)
+
+        cursor.execute(insert_query, values)
+        connection.commit()
+        return [True]
+
+    except Exception as e:
+        # Handle exceptions here
+        print("An error occurred in login:", e)
+        return [False, "Server Error"]
+    finally:
+        if 'connection' in locals():
+            connection.close()

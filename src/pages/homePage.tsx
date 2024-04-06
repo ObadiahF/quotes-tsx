@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom';
 import { TailSpin } from 'react-loader-spinner';
 import './styles/index.css'
-import { getNewQuote } from '../api/quotesApi'
+import { getNewQuote, saveQuote } from '../api/quotesApi'
 import { useEffect, useState } from 'react'
 import axios from "axios";
+import { useToast } from "@/components/ui/use-toast"
+
 
 
 import { FaBookmark, FaCheck, FaArrowRight, FaUser } from 'react-icons/fa';
 
 const HomePage = ()  => {
+    const { toast } = useToast()
 
     type quote = {
         "quote": "",
@@ -44,22 +47,15 @@ const HomePage = ()  => {
     }
     
 
-    const saveQuote = (quote: string, author: string) => {
-        const savedQuotes = localStorage.getItem('savedQuotes');
-        const quoteEntry = {
-            "quote": quote,
-            "author": author
-        };
-
-        if (!savedQuotes || saveQuote.length === 0) {
-            localStorage.setItem('savedQuotes', JSON.stringify([quoteEntry]));
-        } else {
-            const currentSaved = JSON.parse(savedQuotes);
-            
-            currentSaved.push(quoteEntry);
-            localStorage.setItem('savedQuotes', JSON.stringify(currentSaved));
+    const saveCurrentQuote = async (quote: string, author: string) => {
+        const status = await saveQuote(quote, author);
+        if (status === 200) {
+            toast({
+                title: "Success!",
+                description: "Quote successfully saved!"
+            })
+            setCanSave(false);
         }
-        setCanSave(false);
     }
 
     useEffect(() => {
@@ -67,10 +63,9 @@ const HomePage = ()  => {
     }, []);
     
     return (
-        <div className="container">
+        <div className="container text-white">
             <div className="title-container">
-                <h1>Quotes<span>TSX</span></h1>
-                
+                <h1 className='text-8xl'>Quotes<span>TSX</span></h1>
             </div>
 
             <div className="quotes-container">
@@ -106,7 +101,7 @@ const HomePage = ()  => {
             </div>
 
             <div className="btns-container">
-                <button onClick={() => saveQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave ? <FaCheck className='saved'/> : <FaBookmark className='saved'/>}</button>
+                <button onClick={() => saveCurrentQuote(currentQuote[0].quote, currentQuote[0].author)} disabled={!canSave}>Save {!canSave ? <FaCheck className='saved'/> : <FaBookmark className='saved'/>}</button>
                 <button onClick={getNextQuote}>Next <FaArrowRight className='saved' /></button>
                 <Link to={'/account'}><button>Account <FaUser className='saved'/></button></Link>
             </div>

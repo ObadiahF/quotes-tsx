@@ -22,12 +22,10 @@ def get_quotes():
     sessionToken = request.args.get('sessionToken')
     name = request.args.get('name')
 
-    if sessionToken == None | name == None:
+    if not sessionToken or not name:
         return jsonify({'error': "Must be logged in"}), 403
-    
-    checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
 
-    if checkIfSessionExists == False:
+    if not redisServer.checkSessionKey(sessionToken, name):
         return jsonify({'error': "Must be logged in"}), 403
 
     try:
@@ -39,12 +37,12 @@ def get_quotes():
         return jsonify({'error': 'Internal server error'}), 500
 
 
-@app.route('/savequote', methods=['GET'])
+@app.route('/savedquotes', methods=['GET'])
 def save_quotes():
     sessionToken = request.args.get('sessionToken')
     name = request.args.get('name')
 
-    if sessionToken == None | name == None:
+    if not sessionToken or not name:
         return jsonify({'error': "Must be logged in"}), 403
     
     checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
@@ -58,6 +56,35 @@ def save_quotes():
     except Exception as e:
         print(e)
         return jsonify({'error': 'Internal server error'}), 500
+    
+@app.route('/savequote', methods=['POST'])
+def save_quote():
+    # Check if the request contains JSON data
+    if request.is_json:
+        # Get the JSON data from the request
+        data = request.json
+
+        quote = data["quote"]
+        author = data["author"]
+        sessionToken = request.args.get('sessionToken')
+        name = request.args.get('name')
+
+        if not sessionToken or not name:
+            return jsonify({'error': "Must be logged in"}), 403
+        
+        checkIfSessionExists = redisServer.checkSessionKey(sessionToken, name)
+
+        if checkIfSessionExists == False:
+            return jsonify({'error': "Must be logged in"}), 403
+        
+        sqlResponse = mysql.saveQuote(name, quote, author)
+
+        if sqlResponse[0] == False:
+            return jsonify({'error': sqlResponse[1]}), 400
+        else:
+            return jsonify({"success": True}), 200
+    else:
+        return jsonify({"error": "Request must contain JSON data"}), 400
 
 @app.route('/signup', methods=['POST'])
 def signup():
