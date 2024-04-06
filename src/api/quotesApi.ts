@@ -61,8 +61,8 @@ const getData = async () => {
     const session = localStorage.getItem("sessionId");
     const name = localStorage.getItem("name");
     if (!name || !session) {
-        window.location.href = "/auth"
         localStorage.clear();
+        window.location.href = "/auth"
         return
     }
 

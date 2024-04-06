@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaArrowRight, FaArrowLeft, FaWarehouse, FaTrash } from 'react-icons/fa';
 import { getSavedQuotes, deleteSavedQuote } from '../api/quotesApi'
 import { useToast } from "@/components/ui/use-toast"
+import { TailSpin } from 'react-loader-spinner';
 
 
 const Saved = () => {
@@ -16,11 +17,12 @@ const Saved = () => {
 
     const [savedQuotes, setSavedQuotes] = useState<quote[]>([]);
     const [quoteIndex, setQuoteIndex] = useState(0);
+    const [loading, setLoadingState] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             const res = await getSavedQuotes();
-            console.log(res.quotes);
+            setLoadingState(false);
             setSavedQuotes(res.quotes);
         }
 
@@ -65,18 +67,32 @@ const Saved = () => {
             </div>
 
             <div className="quotes-container">
-                {savedQuotes.length > 0 ? (
-                <div className={'delete-btn-container'}>
-                    <h3>{savedQuotes[quoteIndex].quote}</h3>
-                    <h4>{savedQuotes[quoteIndex].quoteAuthor}</h4>
+                { loading ? (
+                <div className="loading">
+                    <TailSpin
+                        height="120"
+                        width="120"
+                        color="#00ADB5"
+                        ariaLabel="tail-spin-loading"
+                        radius="1"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                    />
                 </div>
-                ):
-                <div className={'warning'}>
-                        <h1 className="text-4xl">No Saved Quotes</h1>
-                    <h2 className="text-2xl">Try Saving Some!</h2>
-                </div>
-                }
-
+                    ) : (
+                        savedQuotes.length > 0 ? (
+                            <div className={'delete-btn-container'}>
+                                <h3>{savedQuotes[quoteIndex].quote}</h3>
+                                <h4>{savedQuotes[quoteIndex].quoteAuthor}</h4>
+                            </div>
+                        ) : (
+                            <div className={'warning'}>
+                                <h1 className="text-4xl">No Saved Quotes</h1>
+                                <h2 className="text-2xl">Try Saving Some!</h2>
+                            </div>
+                        )
+                    )}
             </div>
 
             <div className="btns-container">
